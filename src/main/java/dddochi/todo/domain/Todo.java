@@ -26,7 +26,8 @@ public class Todo {
 
     private LocalDateTime createdAt;
 
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    private TodoStatus status;
 
     private String placeName;
 
