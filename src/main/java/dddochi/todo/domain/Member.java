@@ -2,12 +2,14 @@ package dddochi.todo.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Member {
     @Id @GeneratedValue
     @Column(name = "member_id")
@@ -25,4 +27,9 @@ public class Member {
     //체크필요
     @OneToMany(mappedBy = "member")
     private List<Todo> todos = new ArrayList<>();
+
+    public void createMember(String name, Location homeLocation){
+        this.name = name;
+        this.homeLocation = homeLocation;
+    }
 }
