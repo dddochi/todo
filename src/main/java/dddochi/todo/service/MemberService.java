@@ -17,20 +17,20 @@ public class MemberService {
 
     //회원 가입 - 중복 check
     @Transactional
-    public Long register(String name, Location location){
-        Member member = new Member();
-        member.createMember(name, location);
-        if(checkValidation(name)){ //이름 중복 허용 x
-            memberRepository.save(member);
-        }
+    public Long register(Member member){
+
+        member.createMember(member.getName(), member.getHomeLocation());
+        checkValidation(member.getName());
+        memberRepository.save(member);
         return member.getId();
 
     }
 
-    public boolean checkValidation(String name){
-        Member memberByName = memberRepository.findByName(name);
-        if(memberByName.getName().equals(name)) return false;
-        return true;
+    public void checkValidation(String name){
+        List<Member> members = memberRepository.findByName(name);
+        if(!members.isEmpty()){
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
+        }
     }
 
     //회원 조회
