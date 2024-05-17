@@ -28,6 +28,11 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
+    //find by name
+    public Member findByName(String name){
+        return em.find(Member.class, name);
+    }
+
     //remove member
     public void deleteMember(Member member){
         em.remove(member);
