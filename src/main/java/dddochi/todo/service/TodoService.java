@@ -22,7 +22,7 @@ public class TodoService {
 
     //Todo - 생성
     @Transactional
-    public Long addTodo(Long member_id,
+    public Long postTodo(Long member_id,
                         String content,
                         String detail,
                         LocalDateTime createdAt,
@@ -31,8 +31,9 @@ public class TodoService {
                         Location location
                         ){
         Member member = memberRepository.findOne(member_id);
-        Todo todo = new Todo();
-        todo.createTodo(member, content, detail,createdAt,todoStatus, placeName, location);
+
+        Todo todo = Todo.createTodo(member, content, detail,createdAt,todoStatus, placeName, location);
+        //순서 로직 추가하기
         todoRepository.save(todo);
         return todo.getId();
     }
@@ -49,6 +50,24 @@ public class TodoService {
         Todo todo = todoRepository.findOne(id);
         todo.setStatus(TodoStatus.COMPLETED);
     }
+    //Todo - 순서 increment
+    @Transactional
+    public void turnIncrement(Long id){
+        Todo todo = todoRepository.findOne(id);
+
+        if(todo.getTurn() == 1){ //defensive coding
+            throw new IllegalStateException("순서가 1일 때는 Increment 할 수 없습니다.");
+        }
+
+        //내 순서 하나 올리기
+        todo.setTurn(todo.getTurn() + 1);
+        // 위에 있는 순서 하나 내리기
+        todoRepository.decreaseTurn(todo.getTurn() + 1);
+    }
+    //Todo - 순서 decrement
+    @Transactional
+    public void turnDecrement(Long id){}
+
     //Todo - 업데이트
     @Transactional
     public void updateTodo(Long todo_id,

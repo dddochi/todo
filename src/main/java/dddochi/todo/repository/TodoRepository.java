@@ -33,7 +33,13 @@ public class TodoRepository {
         em.remove(todo);
     }
 
+    // id를 조회하면 -> turn값 리턴
+    // turn이 하나 더 높은 애를 조회
+    //각각 업데이트
+    public void decreaseTurn(int turn){ //나의 턴 값보다 높은 레코드
 
+        em.createQuery("update Todo t set t.turn = t.turn + 1 where t.turn = :turn")
+                .setParameter("turn", turn);
+    }
 
-    //complete- todo -> service에서 구현하기
 }
