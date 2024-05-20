@@ -66,14 +66,36 @@ public class TodoService {
             throw new IllegalStateException("순서가 1일 때는 Increment 할 수 없습니다.");
         }
 
-        //내 순서 하나 올리기
-        todo.setTurn(todo.getTurn() + 1);
         // 위에 있는 순서 하나 내리기
-        todoRepository.decreaseTurn(todo.getTurn() + 1);
+        //순서가 todo -1 인 todo 찾기
+        Todo higherTodo = todoRepository.findTodoByTurn(todo.getTurn() - 1);
+        higherTodo.setTurn(higherTodo.getTurn() + 1);
+
+        //내 순서 하나 올리기
+        todo.setTurn(todo.getTurn() - 1);
     }
     //Todo - 순서 decrement
     @Transactional
-    public void turnDecrement(Long id){}
+    public void turnDecrement(Long id)
+    {
+        Todo todo = todoRepository.findOne(id);
+
+        Integer maxTurn = todoRepository.findMaxTurn();
+
+        //max값일 때 내릴 수 없음
+        if(todo.getTurn() == maxTurn){ //defensive coding
+            throw new IllegalStateException("순서가 Max일 때는 Decrement 할 수 없습니다.");
+        }
+
+
+        // 아래에 있는 순서 하나 올리기
+        //순서가 todo +1 인 todo 찾기
+        Todo lowerTodo = todoRepository.findTodoByTurn(todo.getTurn() + 1);
+        lowerTodo.setTurn(lowerTodo.getTurn() - 1);
+
+        //내 순서 하나 내리기
+        todo.setTurn(todo.getTurn() + 1);
+    }
 
     //Todo - 업데이트
     @Transactional

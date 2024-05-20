@@ -5,6 +5,7 @@ import dddochi.todo.domain.Location;
 import dddochi.todo.domain.Member;
 import dddochi.todo.domain.Todo;
 import dddochi.todo.domain.TodoStatus;
+import dddochi.todo.repository.TodoRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TodoServiceTest {
     @Autowired
     TodoService todoService;
+
+    @Autowired
+    TodoRepository todoRepository;
+
     @Autowired
     MemberService memberService;
     //todo 생성
@@ -43,63 +48,134 @@ public class TodoServiceTest {
         assertEquals( 37.5113096,findTodo.getLocation().getLat());
         assertEquals( 127.1051525,findTodo.getLocation().getLng());
 
+
         //todo 생성했을 때 - Content
         assertEquals( "산책하기",findTodo.getContent());
         //todo 생성했을 때 - Detail
         assertEquals("가는 길에 다이소 들리기", findTodo.getDetail());
         //todo 생성했을 때 - PalceName
         assertEquals("석촌호수", findTodo.getPlaceName());
-        //
-        //then
-//        Order getOrder = orderRepository.findOne(orderId);
-//        assertEquals("상품주문시 상태는 ORDER", OrderStatus.ORDER, getOrder.getStatus());
-//        assertEquals("주문한 상품 종류 수가 정확해야 한다.", 1, getOrder.getOrderItems().size());
-//        assertEquals("주문가격은 가격 * 수량이다.", 10000*orderCount, getOrder.getTotalPrice());
-//        assertEquals("주문 수량만큼 재고가 줄어야 한다.", 8, book.getStockQuantity());
+        //todo 생성했을 때 - Turn은 1이어야 한다.
+        assertEquals(1, findTodo.getTurn());
     }
 
 
     //todo 순서 increment
-//    @Test
-//    public void turnIncrement(){
-//        //회원
-//        Member member = new Member();
-//        member.createMember("member1", new Location(1.0, 1.0));
-//        memberService.register(member);
-//
-//        //todo1
-//        Long todoOneId = todoService.postTodo(
-//                member.getId(),
-//                "산책하기",
-//                "가는 길에 다이소 들리기",
-//                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
-//                TodoStatus.PENDING,
-//                "석촌호수",
-//                new Location(37.5113096, 127.1051525)
-//        );
-//        //todo2
-//        Long todoTwoId = todoService.postTodo(
-//                member.getId(),
-//                "곱창 먹기",
-//                "소주 한잔 곁들여서",
-//                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
-//                TodoStatus.PENDING,
-//                "석촌호수",
-//                new Location(37.5113096, 127.1051525)
-//        );
-//        //todo3
-//        Long todoThreeId = todoService.postTodo(
-//                member.getId(),
-//                "꽃 사기",
-//                "장미",
-//                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
-//                TodoStatus.PENDING,
-//                "석촌호수",
-//                new Location(37.5113096, 127.1051525)
-//        );
-//
-//    }
+    @Test
+    public void turnIncrement(){
+        //회원
+        Member member = new Member();
+        member.createMember("member1", new Location(1.0, 1.0));
+        memberService.register(member);
 
+        //todo1
+        Long todo1_id = todoService.postTodo(
+                member.getId(),
+                "산책하기",
+                "가는 길에 다이소 들리기",
+                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
+                TodoStatus.PENDING,
+                "석촌호수",
+                new Location(37.5113096, 127.1051525)
+        );
+        //todo2
+        Long todo2_id = todoService.postTodo(
+                member.getId(),
+                "곱창 먹기",
+                "소주 한잔 곁들여서",
+                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
+                TodoStatus.PENDING,
+                "석촌호수",
+                new Location(37.5113096, 127.1051525)
+        );
+        //todo3
+        Long todo3_id = todoService.postTodo(
+                member.getId(),
+                "꽃 사기",
+                "장미",
+                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
+                TodoStatus.PENDING,
+                "석촌호수",
+                new Location(37.5113096, 127.1051525)
+        );
+
+        Todo todo1 = todoService.findTodo(todo1_id);
+        Todo todo2 = todoService.findTodo(todo2_id);
+        Todo todo3 = todoService.findTodo(todo3_id);
+
+        //원래 순서 todo1 = 1, todo2 = 2,todo3 = 3
+        assertEquals(1, todo1.getTurn());
+        assertEquals(2, todo2.getTurn());
+        assertEquals(3, todo3.getTurn());
+
+        //순서 Increment : 3 -> 2
+        todoService.turnIncrement(todo3_id);
+
+        Todo updatedTodo3 = todoService.findTodo(todo3_id);
+        Todo updatedTodo2 = todoService.findTodo(todo2_id);
+
+        assertThat(2).isEqualTo(updatedTodo3.getTurn());
+        assertThat(3).isEqualTo(updatedTodo2.getTurn());
+
+    }
+    //todo 순서 decrement
+    @Test
+    public void turnDecrement(){
+        //회원
+        Member member = new Member();
+        member.createMember("member1", new Location(1.0, 1.0));
+        memberService.register(member);
+
+        //todo1
+        Long todo1_id = todoService.postTodo(
+                member.getId(),
+                "산책하기",
+                "가는 길에 다이소 들리기",
+                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
+                TodoStatus.PENDING,
+                "석촌호수",
+                new Location(37.5113096, 127.1051525)
+        );
+        //todo2
+        Long todo2_id = todoService.postTodo(
+                member.getId(),
+                "곱창 먹기",
+                "소주 한잔 곁들여서",
+                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
+                TodoStatus.PENDING,
+                "석촌호수",
+                new Location(37.5113096, 127.1051525)
+        );
+        //todo3
+        Long todo3_id = todoService.postTodo(
+                member.getId(),
+                "꽃 사기",
+                "장미",
+                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
+                TodoStatus.PENDING,
+                "석촌호수",
+                new Location(37.5113096, 127.1051525)
+        );
+
+        Todo todo1 = todoService.findTodo(todo1_id);
+        Todo todo2 = todoService.findTodo(todo2_id);
+        Todo todo3 = todoService.findTodo(todo3_id);
+
+        //원래 순서 todo1 = 1, todo2 = 2,todo3 = 3
+        assertEquals(1, todo1.getTurn());
+        assertEquals(2, todo2.getTurn());
+        assertEquals(3, todo3.getTurn());
+
+        //순서 Decrement : 1 -> 2
+        todoService.turnDecrement(todo1_id);
+
+        Todo updatedTodo1 = todoService.findTodo(todo1_id);
+        Todo updatedTodo2 = todoService.findTodo(todo2_id);
+
+        assertThat(2).isEqualTo(updatedTodo1.getTurn());
+        assertThat(1).isEqualTo(updatedTodo2.getTurn());
+
+    }
     //todo 완료 - compeleted
     @Test
     public void completedTodo(){
@@ -143,4 +219,5 @@ public class TodoServiceTest {
         memberService.register(member);
         return member;
     }
+
 }

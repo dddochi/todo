@@ -33,19 +33,20 @@ public class TodoRepository {
         em.remove(todo);
     }
 
-    // id를 조회하면 -> turn값 리턴
-    // turn이 하나 더 높은 애를 조회
-    //각각 업데이트
-    public void decreaseTurn(int turn){ //나의 턴 값보다 높은 레코드
-
-        em.createQuery("update Todo t set t.turn = t.turn + 1 where t.turn = :turn")
-                .setParameter("turn", turn);
-    }
-
     //find max turn
     public Integer findMaxTurn(){
         return  em.createQuery("select Max(t.turn) from Todo t", Integer.class).getSingleResult();
 
     }
 
+    //순서가 todo -1 인 todo 찾기
+    public Todo findTodoByTurn(int turn) {
+        List<Todo> todos = em.createQuery("select t from Todo t where t.turn = :turn", Todo.class)
+                .setParameter("turn", turn)
+                .getResultList();
+        if(todos.size() > 1) throw new IllegalStateException("중복되는 순서가 있습니다.");
+        if(todos.isEmpty()) throw new IllegalStateException("해당 순서의 Todo가 없습니다");
+
+        return todos.get(0);
+    }
 }
