@@ -15,7 +15,7 @@ import java.util.List;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    //pending, completed 조회하기
+    //pending, completed 조회 하기
 
     //회원 가입 - 중복 check
     @Transactional

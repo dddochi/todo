@@ -49,7 +49,10 @@ public class Todo {
                            LocalDateTime createdAt,
                            TodoStatus status,
                            String placeName,
-                           Location location){
+                           Location location,
+                           int turn){
+
+
         Todo todo = new Todo();
         todo.setMember(member);
         todo.setContent(content);
@@ -58,6 +61,7 @@ public class Todo {
         todo.setStatus(status);
         todo.setPlaceName(placeName);
         todo.setLocation(location);
+        todo.setTurn(turn);
         return todo;
     }
 

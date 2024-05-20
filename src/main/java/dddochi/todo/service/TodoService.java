@@ -32,8 +32,15 @@ public class TodoService {
                         ){
         Member member = memberRepository.findOne(member_id);
 
-        Todo todo = Todo.createTodo(member, content, detail,createdAt,todoStatus, placeName, location);
+
         //순서 로직 추가하기
+        //max값 조회 - findMaxTurn
+        Integer maxTurn = todoRepository.findMaxTurn();
+
+        int newTurn = (maxTurn == null) ? 1 : maxTurn + 1;
+
+        //todo생성
+        Todo todo = Todo.createTodo(member, content, detail,createdAt,todoStatus, placeName, location, newTurn);
         todoRepository.save(todo);
         return todo.getId();
     }

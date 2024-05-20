@@ -42,4 +42,10 @@ public class TodoRepository {
                 .setParameter("turn", turn);
     }
 
+    //find max turn
+    public Integer findMaxTurn(){
+        return  em.createQuery("select Max(t.turn) from Todo t", Integer.class).getSingleResult();
+
+    }
+
 }
