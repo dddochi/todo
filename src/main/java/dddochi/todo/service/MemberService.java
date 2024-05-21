@@ -40,6 +40,11 @@ public class MemberService {
         return memberRepository.findOne(id);
     }
 
+    //이름으로 회원 조회
+    public List<Member> findMemberByName(String name){
+        return memberRepository.findByName(name);
+    }
+
     //모든 회원 조회
     public List<Member> findAll(){
         return memberRepository.findAll();
@@ -50,5 +55,19 @@ public class MemberService {
     public void leave(Long id){
         Member member = memberRepository.findOne(id);
         memberRepository.deleteMember(member);
+    }
+
+    //이름 업데이트
+    @Transactional
+    public void updateName(Long id, String name){
+        Member member = memberRepository.findOne(id);
+        member.setName(name);
+    }
+
+    //집 위치 업데이트
+    @Transactional
+    public void updateHome(Long id, Location location){
+        Member member = memberRepository.findOne(id);
+        member.setHomeLocation(location);
     }
 }
