@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.*;
@@ -73,30 +74,28 @@ public class TodoServiceTest {
                 member.getId(),
                 "산책하기",
                 "가는 길에 다이소 들리기",
-                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
-                TodoStatus.PENDING,
                 "석촌호수",
-                new Location(37.5113096, 127.1051525)
+                new Location(37.5113096, 127.1051525),
+                LocalDate.of(2024, 5, 22)
         );
         //todo2
         Long todo2_id = todoService.postTodo(
                 member.getId(),
                 "곱창 먹기",
                 "소주 한잔 곁들여서",
-                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
-                TodoStatus.PENDING,
+
                 "석촌호수",
-                new Location(37.5113096, 127.1051525)
+                new Location(37.5113096, 127.1051525),
+                LocalDate.of(2024, 5, 22)
         );
         //todo3
         Long todo3_id = todoService.postTodo(
                 member.getId(),
                 "꽃 사기",
                 "장미",
-                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
-                TodoStatus.PENDING,
                 "석촌호수",
-                new Location(37.5113096, 127.1051525)
+                new Location(37.5113096, 127.1051525),
+                LocalDate.of(2024, 5, 22)
         );
 
         Todo todo1 = todoService.findTodo(todo1_id);
@@ -131,30 +130,27 @@ public class TodoServiceTest {
                 member.getId(),
                 "산책하기",
                 "가는 길에 다이소 들리기",
-                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
-                TodoStatus.PENDING,
                 "석촌호수",
-                new Location(37.5113096, 127.1051525)
+                new Location(37.5113096, 127.1051525),
+                LocalDate.of(2024, 5, 22)
         );
         //todo2
         Long todo2_id = todoService.postTodo(
                 member.getId(),
                 "곱창 먹기",
                 "소주 한잔 곁들여서",
-                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
-                TodoStatus.PENDING,
                 "석촌호수",
-                new Location(37.5113096, 127.1051525)
+                new Location(37.5113096, 127.1051525),
+                LocalDate.of(2024, 5, 22)
         );
         //todo3
         Long todo3_id = todoService.postTodo(
                 member.getId(),
                 "꽃 사기",
                 "장미",
-                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
-                TodoStatus.PENDING,
                 "석촌호수",
-                new Location(37.5113096, 127.1051525)
+                new Location(37.5113096, 127.1051525),
+                LocalDate.of(2024, 5, 22)
         );
 
         Todo todo1 = todoService.findTodo(todo1_id);
@@ -206,10 +202,9 @@ public class TodoServiceTest {
                 member.getId(),
                 content,
                 detail,
-                LocalDateTime.now(), //createdAt -> 자동으로 찍히게 해야함 (아마 controller에서 구현 now함수)
-                TodoStatus.PENDING,
                 placeName,
-                new Location(37.5113096, 127.1051525)
+                new Location(37.5113096, 127.1051525),
+                LocalDate.of(2024, 5, 22)
         );
     }
 

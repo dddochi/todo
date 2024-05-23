@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,10 +26,9 @@ public class TodoService {
     public Long postTodo(Long member_id,
                         String content,
                         String detail,
-                        LocalDateTime createdAt,
-                        TodoStatus todoStatus,
                         String placeName,
-                        Location location
+                        Location location,
+                         LocalDate date
                         ){
         Member member = memberRepository.findOne(member_id);
 
@@ -40,7 +40,7 @@ public class TodoService {
         int newTurn = (maxTurn == null) ? 1 : maxTurn + 1;
 
         //todo생성
-        Todo todo = Todo.createTodo(member, content, detail,createdAt,todoStatus, placeName, location, newTurn);
+        Todo todo = Todo.createTodo(member, content, detail,LocalDateTime.now(),TodoStatus.PENDING, placeName, location, newTurn, date);
         todoRepository.save(todo);
         return todo.getId();
     }
@@ -102,13 +102,11 @@ public class TodoService {
     public void updateTodo(Long todo_id,
                            String content,
                            String detail,
-                           TodoStatus todoStatus,
                            String placeName,
                            Location location){
         Todo todo = todoRepository.findOne(todo_id);
         todo.setContent(content);
         todo.setDetail(detail);
-        todo.setStatus(todoStatus);
         todo.setPlaceName(placeName);
         todo.setLocation(location);
     }
@@ -118,5 +116,13 @@ public class TodoService {
         Todo todo = todoRepository.findOne(todo_id);
         todoRepository.deleteTodo(todo);
 
+    }
+
+    //update - 위치
+    @Transactional
+    public void updatePlace(Long id, String placeName, Location location){
+        Todo todo = todoRepository.findOne(id);
+        todo.setPlaceName(placeName);
+        todo.setLocation(location);
     }
 }

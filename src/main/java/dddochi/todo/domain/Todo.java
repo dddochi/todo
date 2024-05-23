@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -38,7 +39,7 @@ public class Todo {
     @Embedded
     private Location location;
 
-    private Date date; //todo 작성 날짜 선택
+    private LocalDate date; //todo 작성 날짜 선택
     private int turn; //순서 //auto-generate로 해줘야함! 그날 todo db에 들어오는 순서대로 넣어줘야함 - createdAt 활용? no 순서 user가 바꿀 수 있음
     //front에서 순서 바뀌면 바뀐 순서대로 넣어주기
 
@@ -50,7 +51,8 @@ public class Todo {
                            TodoStatus status,
                            String placeName,
                            Location location,
-                           int turn){
+                           int turn,
+                           LocalDate date){
 
 
         Todo todo = new Todo();
@@ -62,6 +64,7 @@ public class Todo {
         todo.setPlaceName(placeName);
         todo.setLocation(location);
         todo.setTurn(turn);
+        todo.setDate(date);
         return todo;
     }
 
